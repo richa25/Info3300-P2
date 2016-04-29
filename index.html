@@ -1,0 +1,789 @@
+<html>
+<head>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="graphGeneration.js" type="text/javascript"></script> 
+
+  
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <script src="d3.slider.js"></script>
+  <link rel="stylesheet" href="d3.slider.css"/>
+
+  <meta charset="utf-8">
+
+<style>
+
+body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; } div { margin: 30px; }
+svg { background-color: #fffffff;}
+	#display2 { overflow: hidden; }
+	#brazil { float: left; }
+	#graph { float: right; }
+	#slider { clear:both;}
+
+
+.yaxis line{
+	shape-rendering: crispEdges;
+}
+
+.xaxis path {
+    display: none;
+}
+
+.xaxis{
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.yaxis{
+	shape-rendering: crispEdges;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.yaxis path {
+  fill: none;
+  stroke: #000;
+}
+
+#zika-axis path {
+	fill:none;
+}
+
+#display{
+	overflow: hidden;
+}
+
+#map{
+	float:left;
+}
+
+.tooltip{
+	float:right;
+	margin-top: 0px;
+	margin-left: 20px;
+	margin-top: 0px;
+}
+
+.realSVG{
+	float:left;
+}
+
+</style>
+</head>
+<body>
+
+
+<div id="intro" height="200" width="50%" float="middle">
+<h1>The Zika Virus</h1>
+<h2> Richa Deshpande (rd382), Il Kwon (ik226), Harini Kannan (hk473) </h2>
+<p margin-right="50px">
+The Zika virus has become the latest epidemic to cause panic in media since Ebola. The constant media attention seemed to warrant some sort of analysis of the data itself. Many articles have suggested that there is a correlation between poverty and the virus, and that certain countries (like Brazil) are more prone to outbreaks than others. Therefore, we offer a chance to compare various countries with suspected outbreaks, along with some economic factors that might influence the outbreaks such as GDP, poverty levels, and factors related to infant mortality and care for pregnant women.
+</p>
+<p> Additionally, the Zika Virus is transmitted via mosquitos. Therefore, along with a case and economic study of the disease, we also offer data on the mosquito habitat per country. Does increased 
+<h4>
+Click on a country to gain more information. From there, you can select another country and an economic factor with which to compare.
+</h4>
+
+</div>
+
+<div id="display" float="left" width="100%" height="600px">
+
+</div>
+
+
+<script>
+
+var width = 450;
+var height = 500;
+var projection = d3.geo.mercator();
+var path = d3.geo.path().projection(projection);
+var centered;
+
+var svg = d3.select("#display").append("svg")
+	.attr("id", "map")
+    .attr("width", width)
+    .attr("height", height);
+
+var g = svg.append("g");
+
+var zikaNations;
+var rendered = false;
+var previous;
+
+var mapPrevious;
+var economicFactors = ["GDP Per Capita in USD", "Poverty Headcount at National Poverty Lines (% of Population)", 
+"Pregnant Women Receiving Prenatal Care (% of Population)", "Births Attended by Skilled Health Staff (% of Population)", "Mortality rate, infant, male (per 1,000 live births)"];
+var inputName;
+
+d3.json("world-50m.json", function(error, world) {
+	if (error) throw console.warn(error);
+	d3.json("confirmed.json", function(error, nation){
+		if (error) throw console.warn(error);
+		d3.json("suspected.json", function(error, suspected){
+			if (error) throw console.warn(error);
+    			var countries= topojson.feature(world, world.objects.countries).features;
+	
+				//combine zika data into each country object
+				nation.forEach(function(zikaNation){
+		
+					suspected.forEach(function(d){
+						if(zikaNation.country == d.country){
+							zikaNation.suspect = d.suspect;
+						};
+					});
+		
+					countries.forEach(function(d){
+			
+						if(zikaNation.id == d.id){
+							d.name = zikaNation.country;
+							d.value = zikaNation.value;
+							d.suspect = zikaNation.suspect;
+						};
+					});
+				});
+	
+	//filter countries with active zika outbreaks
+	zikaNations = countries.filter(function(d){ return d.value != null; });
+	//console.log(zikaNations);
+	var minColor = "#D7CDCD";
+	var maxColor = "#430404";
+	
+	var zikaDomain = d3.extent(zikaNations, function(d){ return d.value; });
+	
+	//legend for confirmed number of zika in america
+	var countryLegend = 
+	svg.append("defs").append("svg:linearGradient")
+	.attr("id", "gradient")
+	.attr("x1", "100%")
+	.attr("y1", "0%")
+	.attr("x2", "100%")
+	.attr("y2", "100%")
+	.attr("spreadMethod", "pad");
+	
+	countryLegend.append("stop")
+	.attr("offset", "0%")
+	.attr("stop-color", maxColor)
+	.attr("stop-opacity", 1);
+	
+	countryLegend.append("stop")
+	.attr("offset", "100%")
+	.attr("stop-color", minColor)
+	.attr("stop-opacity", 1);
+	
+	svg.append("rect").attr("x", 50)
+	.attr("y", 50)
+	.attr("width", 20)
+	.attr("height", 100)
+	.style("fill", "url(#gradient)");
+	
+	var zikaLegendScale = d3.scale.linear().range([100,0]).domain(zikaDomain)
+	var legendAxis = d3.svg.axis().scale(zikaLegendScale).orient("right").ticks(3);
+	svg.append("g").attr("transform", "translate("+70+","+50+")")
+	.call(legendAxis).attr("id","zika-axis")
+	.append("text").attr("transform", "rotate(-90) translate("+"20"+","+(-30)+")").text("confirmed zika cases")
+	.style("text-anchor", "end")
+	
+	//linear scale based on zika confirmed numbers which map onto color scheme
+	var zikaScale = d3.scale.linear().domain(zikaDomain).range([minColor,maxColor]);	
+	countries.forEach(function(country){
+		g.append("path")
+		.attr("d", path(country))
+		.style("fill",function(d){
+			if (country.value != null){
+				return zikaScale(country.value);
+			}
+			else { return "#e6e6e6"; }
+		})
+		.style("stroke","#fff")
+		.style("stroke-width", 0.5 + "px");
+    });
+	
+	//bind each click to zoom + infobox to appear 
+    g.selectAll("path").data(countries).on("click", clicked);
+		});
+	});
+});
+
+//update infobox by each economic selection
+function eSelection(){
+	
+	//current value of country to be compared with
+	var cSelected = document.getElementById("comparison").value;
+	//current value of selected economic factor
+	var eSelected = document.getElementById("economics").value;
+
+	d3.selectAll(".realSVG > *").remove();
+	
+	var text = d3.select(".tooltip").append("p").attr("id", "confirmed-number2").attr("float","left");
+	
+	//respond to new selection
+	if(cSelected!= previous){
+
+		var cObject;
+
+		zikaNations.forEach(function(nation, i){
+			if(cSelected == nation.name){
+				cObject = nation;
+			}
+		})
+
+		d3.select("#confirmed-number2")
+			.html("<strong>" + cSelected + "</strong>" + "<br>" + "confirmed number: " + cObject.value + "<br>" + "suspected number: " + cObject.suspect);
+
+	}	
+
+	//Depending on which economic factor is chosen, call the function related to that factor
+	if(eSelected=="GDP Per Capita in USD"){
+		renderGDP(inputName.name, cSelected);
+	}
+	if(eSelected=="Poverty Headcount at National Poverty Lines (% of Population)"){
+		renderPoverty(inputName.name, cSelected);
+	}
+	if(eSelected == "Pregnant Women Receiving Prenatal Care (% of Population)"){
+		renderPreg(inputName.name, cSelected);
+	}
+	if(eSelected == "Births Attended by Skilled Health Staff (% of Population)"){
+		renderBirths(inputName.name, cSelected);
+	}
+	if(eSelected == "Mortality rate, infant, male (per 1,000 live births)"){
+		renderMortality(inputName.name, cSelected);
+	}
+
+	previous = cSelected;
+
+}
+
+//This function takes care of all the cases in which something interactive is clicked
+function clicked(d) {
+	var x, y, k, previous;
+	if (d && centered != d) {
+		var centroid = path.centroid(d);
+		x = centroid[0];
+		y = centroid[1];
+		k = 4;
+		centered = d;
+		
+		//remove previous infobox and mosquito habitat when clicked other countries
+		if (d != previous){
+			svg.selectAll('.svg-tooltip').remove();
+			svg.selectAll('.mosquito-circle').remove();
+		}
+		if (d.value == undefined){
+			return
+		}
+		
+		if (d != previous){
+			d3.select(".tooltip").remove();
+		}
+
+		//update the previous property to be current country object
+		previous = d;
+		
+		var box = d3.select("#display").append("foreignObject")
+		.attr("class","svg-tooltip")
+		.attr("x", (x-250) + "px")
+		.attr("y", (y-250) +"px");
+		
+		var div = box.append("xhtml:div")
+		.append("div")
+		.style("width", 600+"px")
+		.style("height", 400+"px")
+		.style("background-color", "rgba(248,248,255,0.7)")
+		.style("padding", 10 +"px")
+		.attr("class","tooltip");
+		
+		inputName = d;
+
+		//This is the dropdown menu to pick from the list of countries
+		var selectBox = div.append("select").attr("id","comparison").attr("onchange", "eSelection()").style("margin-right",5);
+
+		//This fills in the information for all the values of the dropdown
+		zikaNations.forEach(function(dNation, i){
+			var countryName = dNation.name;
+			if (countryName == d.name){
+				
+			}
+			else{
+			
+			var test = selectBox.append("option").attr("value", countryName).text(countryName);
+			}
+		});
+
+		//This is the dropdown menu for all the economic factors
+		var economicSelectBox = div.append("select").attr("id", "economics").attr("onchange", "eSelection()")
+		//this fills in the values for the dropdown
+		economicFactors.forEach(function(eFactor, i){
+			if(eFactor == d.name){
+
+			}
+			else{
+				var t = economicSelectBox.append("option").attr("value", eFactor).text(eFactor);
+			}
+		});
+		
+		//button for mosquito habitat render
+		div.append("button").text("view mosquito habitat").attr("onclick","mosquito()").style("margin-top",10);
+		div.append("button").text("hide").attr("onclick", "mosquitoHide()").style("margin-top",10).style("margin-left",5);
+		
+		//This svg is the actual bar graph
+		div.append('svg').attr("height", 400)
+		.attr("width", 350).attr("class", "realSVG")
+		.style("border","none")
+		.attr("transform", "translate(100 0)");
+
+		div.append('p')
+		.attr("class","confirmed-number")
+		.attr("float", "left")
+		.html("<strong>" + d.name + "</strong>" + "<br>" + "confirmed number: " + d.value + "<br>" + "suspected number: " + d.suspect);
+			
+	}
+	else{
+		x = width/2;
+		y = height/2;
+		k = 1;
+		centered = null;
+		svg.selectAll('.svg-tooltip').remove();
+	}
+	//give new class to selected region
+	g.selectAll("path").classed("active", centered && function(d){ return d == centered;});
+	
+	g.transition().duration(750)
+	.attr("transform", "translate(" + width /2 + "," + height/2 + ")scale(" + k + ")translate(" + -x + "," + -y + ")")
+	.style("stroke-width", 1.5/k + "px");
+}
+
+//render mosquito habitat within selected country
+function mosquito(){
+	var mosquitos;
+	d3.json("mosquito.json", function(error, mosquito){
+		
+		//filter habitats by currently selected region
+		var region = mosquito.filter(function(d){ return d.country == inputName.name; })
+		var mosqLocations = region.map(function(d){
+			var loc = projection([d.y_coord, d.x_coord]);
+			return {longitude: loc[0],
+					latitude: loc[1] };
+		});
+
+		d3.select("g").selectAll("circle")
+		.data(mosqLocations).enter().append("circle")
+		.attr("class", "mosq-circle")
+		.attr("cx", function(d){ return d.longitude; })
+		.attr("cy", function(d){ return d.latitude; })
+		.style("fill", "red").style("opacity", 0.2);
+		
+		mosqLocations.forEach(function(d){
+			point = projection([d.y_coord, d.x_coord])
+			
+			g.append("circle").attr("cx", d.longitude)
+			.attr("cy", d.latitude)
+		.attr("r", 1)
+			.attr("class","mosquito-circle")
+		.style("fill", "red")
+		.style("opacity",0.2);
+		});		
+	});
+};
+
+//remove mosquito habitat renderings 
+function mosquitoHide(){
+	d3.selectAll('.mosquito-circle').remove();
+}
+</script>
+
+
+<div id="textBox" height="200" width="50%" float="middle">
+<h2>Focusing on Brazil</h2>
+<p>
+Though several South American countries have been affected by the Zika virus, Brazil has been the country most frequently discussed in relation to the virus. For the data given above, we find this interesting because Colombia is the country with the most confirmed cases. However, we suspect that Brazil is attracting a lot of attention because it is leading in the number of the most suspected cases. Therefore, we wanted to investigate the suspected number of Zika virus outbreaks within Brazil. We broke up the map of Brazil and found the number of suspected cases per region, and how the changed over time. In relation to the investigation above, we also wanted to compare the GDP per state with the number of cases. 
+</p>
+<h4>
+Slide through the months to see the spread of Zika through Brazil.
+</h4>
+</div>
+
+
+
+
+<script>
+
+/*
+Begining of "Fousing on Brazil" visualization
+*/
+
+	  //Function to determine if argument item is in argument arr
+	  function contains(arr, item) {
+
+	  	for (var i=0; i<arr.length; i++) {
+	  		if (arr[i] == item) {return true;}
+	  	}
+
+	  	return false;
+
+	  }
+
+      //Function to get the maximum out of an array
+	  function getMaxOfArray(numArray) {
+		  return Math.max.apply(null, numArray);
+		}
+
+      //Custom function that given a state id, will calculate the 
+      //opacity for the given dict which contains the ids and cases
+      //for the states in that iteration of the month
+	  function opacCalc(id, dict) {
+
+	  	var ids = dict[0];
+	  	var cases = dict[1];
+	  	var wanted = 0;
+
+	  	var max = 0;
+
+	  	for (var i=0; i<ids.length; i++) {
+
+	  		if (ids[i] == id) {
+
+	  			wanted = cases[i];
+
+	  		}
+
+	  	}
+
+	  	max = getMaxOfArray(cases);
+
+	  	var calc = wanted/max;
+
+	  	if (calc < .1) {return .1;}
+	  	else {return calc;}
+
+	  }
+
+	</script>
+
+
+
+	<div id="display2" float="left" width="100%" height="600px">
+
+	<script>
+
+    //Function that creates the map display
+	function mapper(month, dict){
+
+			var ids = dict[0];
+			var cases = dict[1];
+			var sts = ["Acre", "Alagoas", "Amazonas", "Amapa",
+			 "Bahia", "Ceara", "Espirito Santo", "Goias",
+			 "Maranhao", "Minas Gerais", "Mato Grosso do Sul",
+			 "Mato Grosso", "Para", "Paraiba", "Pernambuco",
+			 "Piaui", "Parana", "Rio de Janeiro", 
+			 "Rio Grande do Norte", "Rondonia", "Roraima", 
+			 "Rio Grande do Sul", "Santa Catarina", "Sergipe", 
+			 "Sao Paulo", "Tocantins", "Distrio Federal"];
+
+
+			d3.select("#brazil").remove();
+
+			var count = 0;
+
+			var width = 500,
+			    height =500;
+			var projection = d3.geo.mercator()
+				.center([-30,-14]).scale(500);;
+			var path = d3.geo.path().projection(projection);
+			var centered;
+
+			var svg1 = d3.select("#display2").append("svg")
+			    .attr("width", width)
+			    .attr("id", "brazil")
+			    .attr("height", height);
+			var g = svg1.append("g");
+
+			d3.json("brasilMap.json", function(error, world) {
+
+		    var states= topojson.feature(world, world.objects.brazilstates).features;
+
+			states.forEach(function(country, i){
+				
+				//drawing state paths here
+				//color depends on whether or not the state has
+				//suspected cases for the given month
+				//opacity is a ratio based on how the current state
+				//being drawn compares to the others during that //month
+				g.append("path")
+				.attr("d", path(country))
+				.style("fill", function() {
+
+					if (contains(ids, count)) {
+						return "#800000";
+					}
+					else { return "#DCDCDC";}
+
+				})
+				.style("opacity", function () {
+
+					if (contains(ids, count)) {
+						
+						count++;
+						return opacCalc(count, dict);
+					}
+					else {
+						count++;
+						return 1;
+					}
+					
+					
+				})
+				.style("stroke","white")
+				.style("stroke-width", 1.5 + "px")
+				.on("mouseover",function() {					
+					d3.select("#location").text(sts[i]);
+				});
+				
+				
+				
+		    });	
+			
+			//legend to show the color scale that 
+			//illustrates how many cases each state approximately
+			//has for the current month
+			var brazilLegend = 
+			svg1.append("defs").append("svg:linearGradient")
+			.attr("id", "br-gradient")
+			.attr("x1", "100%")
+			.attr("y1", "0%")
+			.attr("x2", "100%")
+			.attr("y2", "100%")
+			.attr("spreadMethod", "pad");
+
+			brazilLegend.append("stop")
+			.attr("offset", "0%")
+			.attr("stop-color", "#800000")
+			.attr("stop-opacity", 1);
+
+			brazilLegend.append("stop")
+			.attr("offset", "100%")
+			.attr("stop-color", "#DCDCDC")
+			.attr("stop-opacity", 1);
+
+			svg1.append("rect").attr("x", 50)
+			.attr("y", 50)
+			.attr("width", 20)
+			.attr("height", 100)
+			.style("fill", "url(#br-gradient)");
+			
+			var brZikaDomain;
+			d3.csv("monthlyCases.csv", function(error, data) {
+				if(error) throw error;
+				brZikaDomain = d3.extent(data, function(d){ return d.Cases; });
+				
+			
+			//console.log(brZikaDomain)
+			var brazilLegendScale = d3.scale.linear().range([100,0]).domain(brZikaDomain);
+			var brlegendAxis = d3.svg.axis().scale(brazilLegendScale).orient("right").ticks(4);
+			svg1.append("g").attr("transform", "translate("+70+","+50+")")
+			.call(brlegendAxis).attr("id","zika-axis")
+			.append("text").attr("transform", "rotate(-90) translate("+"20"+","+(-30)+")").text("suspected zika cases")
+			.style("text-anchor", "end")
+			});
+		});
+	}
+
+	
+
+    //function that graphs the GDP graph based on current month
+    //returns a dict variable containing ids and cases for the 
+    //during the current month
+	function update(month) {
+
+		d3.select("#graph").remove();
+
+		var states = [];
+		var ids = [];
+		var cases = [];
+
+        //extract information for the current month
+		d3.csv("monthlyCases.csv", function(error, data) {
+		var opac = 0;
+		
+		var months =[];
+		
+	    data.forEach(function(d) {
+
+		    if (d["Month"] == month) {
+		    	states.push(d["State"]);
+		    	ids.push(d["ID"]);
+		    	cases.push(d["Cases"]);
+
+		    }
+		});
+		//graphing the actual graph
+	    	var margin = {top: 50, right: 40, bottom: 180, left: 100},
+		    width = 500,
+		    //700 - margin.left - margin.right,
+		    height = 300;
+		    //400 - margin.top - margin.bottom;
+		 var states2 = [];
+		    var gdpPerState = [];
+		d3.csv("brasilregions.csv", function(data){
+		        data.forEach(function(row){
+		            states2.push(row["State"]);
+		            gdpPerState.push(row["GDPPC"]);
+		        });
+		var x = d3.scale.ordinal().rangeRoundBands([0, width], .1);
+		var y = d3.scale.linear().domain([0,33088]).range([height, 0]);
+		var xAxis = d3.svg.axis()
+		    .scale(x)
+		    .orient("bottom")
+		    .tickFormat(function(d,i){return states2[i]});
+		var yAxis = d3.svg.axis()
+		    .scale(y)
+		    .orient("left")
+		    .ticks(10)
+		    .tickPadding(0);
+		var svg = d3.select("#display2").append("svg")
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("id", "graph")
+		    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform", 
+		          "translate(" + margin.left + "," + margin.top + ")");
+		d3.csv("brasilregions.csv", function(error, data) {
+		    data.forEach(function(d) {
+		        d.State = d["State"];//+d.State;
+		        d.GDPPC= d["GDPPC"];//+d.GDPPC;
+		    });
+		    
+		  x.domain(data.map(function(d) {
+
+		  	return d.State; 
+
+		  }));
+
+		  //appending axes
+		  svg.append("text")
+		  .style("text-anchor", "middle")
+	      .attr("dx", "-8.7em")
+	      .attr("dy", "-4.5em")
+	      .attr("transform", "rotate(-90)" )
+	      .style("font-weight", "bold")
+	      .text("GDP per Capita");
+
+
+	      svg.append("text")
+		      .attr("dx", "16.5em")
+		      .attr("dy", "30em")
+		      .style("text-anchor", "middle")
+		      .style("font-weight", "bold")
+		      .text("Brazil States");
+
+
+		  //The color of the bars for ech state depends on 
+		  //whether or not the state has any cases for the
+		  //current month
+		  svg.append("g")
+		      .attr("class", "xaxis")
+		      .attr("transform", "translate(0," + height + ")")
+		      .call(xAxis)
+		    .selectAll("text")
+		      .style("text-anchor", "end")
+		      .attr("dx", "-.8em")
+		      .attr("dy", "-.55em")
+		      .attr("transform", "rotate(-90)" )
+		      .style("font-size", "12px");
+		  svg.append("g")
+		      .attr("class", "yaxis")
+		      .call(yAxis)
+		    .append("text")
+		      .attr("transform", "rotate(-90)")
+		      .attr("y", 6)
+		      .attr("dy", ".71em")
+		      .style("text-anchor", "end")
+		  svg.selectAll("bar")
+		      .data(data)
+		    .enter().append("rect")
+		    .attr("class", "bar")
+		      .style("fill", function(d) {
+		      	if (contains(states, d.State)) {
+
+		      		return "#660033";
+		      	}
+		      	else {
+		      		return "#A9A9A9"
+		      	}
+		      	})
+		      .style("opacity", function(d) {
+		      	if (contains(states, d.State)) {
+
+		      		return 1;
+		      	}
+		      	else {
+		      		return .7
+		      	}
+		      }) 
+		      .attr("x", function(d) { 
+
+		      		return x(d.State);
+
+		      })
+		      .attr("width", x.rangeBand())
+		      .attr("y", function(d) { return y(d.GDPPC); })
+		      .attr("height", function(d) { return height - y(d.GDPPC); })
+		      .attr("opacity",1);
+			  
+			  
+				});
+			});
+
+		});
+
+
+
+		return [ids, cases, states];
+
+	}
+
+		//Function that starts on the first month the slider is 
+		//snapped to
+		function initialize() {
+			var dict = update("November");
+			mapper("November", dict);
+		}
+
+		</script>
+
+
+	</script>
+
+	</div>
+
+<div id="locationDiv">
+<h7>State: </h7>
+<span id="location">Hover over the map.</span>
+</div>
+
+	<div id="slider">
+		<script>
+
+
+		  //list for the ordinal scale of the slider
+	      var domainList = ["November", "December", "January", "February", 
+	      	"March"];
+
+	      //starting the visulaization on the first month
+		  initialize();
+
+		  //creating the slider which updates the map and 
+		  //graph depending on the month that the slider is on
+	      d3.select('#slider').call(d3.slider().scale(d3.scale.ordinal().domain(domainList).rangePoints([0,1], .5)).axis(d3.svg.axis()).snap(true)
+	      		.value("November").on("slide", function(evt, value){
+	      				var dict = update(value);
+	      				mapper(value, dict);
+
+	      		}));
+			
+
+
+		</script>
+		
+	</div>
+
+
+</body>
+</html>

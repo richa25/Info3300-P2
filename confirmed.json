@@ -1,0 +1,142 @@
+[
+  {
+    "country": "Trinidad and Tobago",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Non Latin Caribbean",
+    "value": 13,
+	"id": 780
+  },
+  {
+    "country": "Suriname",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Non Latin Caribbean",
+    "value": 485,
+	"id": 740
+  },
+  {
+    "country": "Jamaica",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Non Latin Caribbean",
+    "value": 1,
+	"id": 388
+  },
+  {
+    "country": "Guyana",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Non Latin Caribbean",
+    "value": 1,
+	"id": 328
+  },
+  {
+    "country": "Barbados",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Non Latin Caribbean",
+    "value": 7,
+	"id": 52
+  },
+  {
+    "country": "Paraguay",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "South Cone",
+    "value": 7,
+	"id": 600
+  },
+  {
+    "country": "Brazil",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "South Cone",
+    "value": 534,
+	"id": 76
+  },
+  {
+    "country": "Venezuela",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Andean",
+    "value": 352,
+	"id": 862
+  },
+  {
+    "country": "Ecuador",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Andean",
+    "value": 71,
+	"id": 218
+  },
+  {
+    "country": "Colombia",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Andean",
+    "value": 3061,
+	"id": 170
+  },
+  {
+    "country": "Bolivia",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Andean",
+    "value": 12,
+	"id": 68
+  },
+  {
+    "country": "Haiti",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Latin Caribbean",
+    "value": 5,
+	"id": 332
+  },
+  {
+    "country": "Dominican Republic",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Latin Caribbean",
+    "value": 56,
+	"id": 214
+  },
+  {
+    "country": "Panamá",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Central America",
+    "value": 220,
+	"id": 591
+  },
+  {
+    "country": "Nicaragua",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Central America",
+    "value": 135,
+	"id": 558
+  },
+  {
+    "country": "Honduras",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Central America",
+    "value": 2,
+	"id": 340
+  },
+  {
+    "country": "Guatemala",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Central America",
+    "value": 261,
+	"id": 320
+  },
+  {
+    "country": "El Salvador",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Central America",
+    "value": 43,
+	"id": 222
+  },
+  {
+    "country": "Costa Rica",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "Central America",
+    "value": 8,
+	"id": 188
+  },
+  {
+    "country": "Mexico",
+    "Measure Names": "Confirmed Zika",
+    "Sub-Region": "North America",
+    "value": 222,
+	"id": 484
+  }
+]

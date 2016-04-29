@@ -1,0 +1,127 @@
+ID,Month,State,Cases
+1,November,Alagoas,102
+4,November,Bahia,417
+5,November,Ceara,184
+8,November,Maranhao,217
+13,November,Paraiba,223
+14,November,Pernambuco,185
+15,November,Piaui,224
+18,November,Rio Grande do Norte,167
+23,November,Sergipe,75
+1,December,Alagoas,51
+4,December,Bahia,68
+5,December,Ceara,41
+8,December,Maranhao,47
+13,December,Paraiba,99
+14,December,Pernambuco,151
+15,December,Piaui,20
+18,December,Rio Grande do Norte,46
+23,December,Sergipe,39
+2,December,Amazonas,1
+12,December,Para,8
+25,December,Tocantins,33
+6,December,Espirito Santo,11
+9,December,Minas Gerais,14
+17,December,Rio de Janeiro,20
+24,December,Sao Paulo,6
+21,December,Rio Grande do Sul,1
+1,January,Alagoas,103
+4,January,Bahia,546
+5,January,Ceara,254
+8,January,Maranhao,150
+13,January,Paraiba,427
+14,January,Pernambuco,1196
+15,January,Piaui,70
+18,January,Rio Grande do Norte,201
+23,January,Sergipe,173
+2,January,Amazonas,1
+12,January,Para,10
+25,January,Tocantins,86
+6,January,Espirito Santo,54
+9,January,Minas Gerais,21
+17,January,Rio de Janeiro,214
+24,January,Sao Paulo,111
+21,January,Rio Grande do Sul,0
+0,January,Acre,22
+19,January,Rondonia,1
+26,January,Distrio Federal,6
+7,January,Goias,73
+11,January,Mato Grosso,121
+10,January,Mato Grosso do Sul,5
+16,January,Parana,1
+1,February,Alagoas,229
+4,February,Bahia,863
+5,February,Ceara,363
+8,February,Maranhao,201
+13,February,Paraiba,826
+14,February,Pernambuco,1722
+15,February,Piaui,139
+18,February,Rio Grande do Norte,383
+23,February,Sergipe,201
+2,February,Amazonas,8
+12,February,Para,18
+25,February,Tocantins,125
+21,February,Rio Grande do Sul,43
+0,February,Acre,26
+19,February,Rondonia,11
+20,February,Roraima,14
+26,February,Distrio Federal,31
+7,February,Goias,104
+11,February,Mato Grosso,178
+10,February,Mato Grosso do Sul,15
+16,February,Parana,19
+22,February,Santa Catarina,19
+1,March,Alagoas,255
+4,March,Bahia,991
+5,March,Ceara,437
+8,March,Maranhao,235
+13,March,Paraiba,853
+14,March,Pernambuco,1846
+15,March,Piaui,150
+18,March,Rio Grande do Norte,408
+23,March,Sergipe,205
+2,March,Amazonas,13
+12,March,Para,24
+25,March,Tocantins,133
+21,March,Rio Grande do Sul,57
+0,March,Acre,33
+3,March,Amapa,5
+19,March,Rondonia,12
+20,March,Roraima,16
+26,March,Distrio Federal,37
+7,March,Goias,121
+11,March,Mato Grosso,198
+10,March,Mato Grosso do Sul,18
+16,March,Parana,31
+22,March,Santa Catarina,3
+6,March,Espirito Santo,113
+9,March,Minas Gerais,76
+17,March,Rio de Janeiro,380
+24,March,Sao Paulo,256
+1,April,Alagoas,275
+4,April,Bahia,1040
+5,April,Ceara,452
+8,April,Maranhao,240
+13,April,Paraiba,862
+14,April,Pernambuco,1871
+15,April,Piaui,154
+18,April,Rio Grande do Norte,417
+23,April,Sergipe,209
+2,April,Amazonas,14
+12,April,Para,24
+25,April,Tocantins,133
+21,April,Rio Grande do Sul,62
+0,April,Acre,35
+3,April,Amapa,7
+19,April,Rondonia,12
+20,April,Roraima,21
+26,April,Distrio Federal,37
+7,April,Goias,126
+11,April,Mato Grosso,202
+10,April,Mato Grosso do Sul,18
+16,April,Parana,33
+22,April,Santa Catarina,5
+6,April,Espirito Santo,130
+9,April,Minas Gerais,92
+17,April,Rio de Janeiro,412
+24,April,Sao Paulo,267

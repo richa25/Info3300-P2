@@ -1,0 +1,122 @@
+[
+  {
+    "country": "Trinidad and Tobago",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Non Latin Caribbean",
+    "suspect": 0
+  },
+  {
+    "country": "Suriname",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Non Latin Caribbean",
+    "suspect": 3440
+  },
+  {
+    "country": "Jamaica",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Non Latin Caribbean",
+    "suspect": 0
+  },
+  {
+    "country": "Guyana",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Non Latin Caribbean",
+    "suspect": 0
+  },
+  {
+    "country": "Barbados",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Non Latin Caribbean",
+    "suspect": 316
+  },
+  {
+    "country": "Paraguay",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "South Cone",
+    "suspect": 0
+  },
+  {
+    "country": "Brazil",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "South Cone",
+    "suspect": 72062
+  },
+  {
+    "country": "Venezuela",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Andean",
+    "suspect": 15495
+  },
+  {
+    "country": "Ecuador",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Andean",
+    "suspect": 139
+  },
+  {
+    "country": "Colombia",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Andean",
+    "suspect": 61778
+  },
+  {
+    "country": "Bolivia",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Andean",
+    "suspect": 0
+  },
+  {
+    "country": "Haiti",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Latin Caribbean",
+    "suspect": 1777
+  },
+  {
+    "country": "Dominican Republic",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Latin Caribbean",
+    "suspect": 1249
+  },
+  {
+    "country": "Panamá",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Central America",
+    "suspect": 0
+  },
+  {
+    "country": "Nicaragua",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Central America",
+    "suspect": 0
+  },
+  {
+    "country": "Honduras",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Central America",
+    "suspect": 17556
+  },
+  {
+    "country": "Guatemala",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Central America",
+    "suspect": 915
+  },
+  {
+    "country": "El Salvador",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Central America",
+    "suspect": 11011
+  },
+  {
+    "country": "Costa Rica",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "Central America",
+    "suspect": 0
+  },
+  {
+    "country": "Mexico",
+    "Measure Names": "Suspected Zika",
+    "Sub-Region": "North America",
+    "suspect": 0
+  }
+]
